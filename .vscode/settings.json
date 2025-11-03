@@ -1,0 +1,6 @@
+{
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "/Users/iridache/Downloads/junit-platform-console-standalone-6.0.1.jar"
+    ]
+}
