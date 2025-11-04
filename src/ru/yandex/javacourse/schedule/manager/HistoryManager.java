@@ -11,6 +11,6 @@ import ru.yandex.javacourse.schedule.tasks.Task;
  */
 public interface HistoryManager {
 	List<Task> getHistory();
-
+	void remove(int id);
 	void addTask(Task task);
 }
