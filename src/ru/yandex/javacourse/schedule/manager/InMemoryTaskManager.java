@@ -41,7 +41,7 @@ public class InMemoryTaskManager implements TaskManager {
 		ArrayList<Subtask> tasks = new ArrayList<>();
 		Epic epic = epics.get(epicId);
 		if (epic == null) {
-			return null;
+			throw new IllegalArgumentException("Subtask cannot be its own epic. ID: " + epicId);
 		}
 		for (int id : epic.getSubtaskIds()) {
 			tasks.add(subtasks.get(id));
