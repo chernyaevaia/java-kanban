@@ -16,7 +16,6 @@ enum TaskType {
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     protected File file = new File("history.csv");
-    private boolean isLoading = false;
 
     public FileBackedTaskManager(File file) {
         this.file = file;
@@ -24,16 +23,14 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static FileBackedTaskManager loadFromFile(File file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
-        manager.isLoading = true;
-        manager.updateGeneratorId();
 
         try {
+            InMemoryTaskManager parentManager = manager;
             String content = Files.readString(file.toPath());
             String[] lines = content.split("\n");
 
             for (int i = 1; i < lines.length; i++) {
                 String line = lines[i].trim();
-
                 if (line.isEmpty()) {
                     continue;
                 }
@@ -41,38 +38,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 Task task = manager.createFromString(line);
 
                 if (task instanceof Subtask) {
-                    manager.addNewSubtask((Subtask) task);
+                    parentManager.addNewSubtask((Subtask) task);
                 } else if (task instanceof Epic) {
-                    Epic epic = (Epic) task;
-                    manager.addNewEpic(epic);
+                    parentManager.addNewEpic((Epic) task);
                 } else {
-                    manager.addNewTask(task);
+                    parentManager.addNewTask(task);
                 }
             }
 
         } catch (IOException e) {
-            System.out.println("Error reading file: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("Error reading file, starting with an empty manager: " + e.getMessage());
+            return new FileBackedTaskManager(file);
         }
 
-        manager.isLoading = false;
         return manager;
-    }
-
-    private void updateGeneratorId() {
-        int maxId = 0;
-
-        for (Task task : getTasks()) {
-            maxId = Math.max(maxId, task.getId());
-        }
-        for (Epic epic : getEpics()) {
-            maxId = Math.max(maxId, epic.getId());
-        }
-        for (Subtask subtask : getSubtasks()) {
-            maxId = Math.max(maxId, subtask.getId());
-        }
-
-        generatorId = maxId;
     }
 
     private TaskType getTaskType(Task task) {
@@ -121,8 +100,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     public void save() {
-        if (isLoading)
-            return;
 
         try (FileWriter fileWriter = new FileWriter(file)) {
             fileWriter.write("id,type,name,status,description,epic\n");

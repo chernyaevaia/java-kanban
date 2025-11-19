@@ -72,19 +72,34 @@ public class InMemoryTaskManager implements TaskManager {
 
 	@Override
 	public int addNewTask(Task task) {
-		final int id = ++generatorId;
-		task.setId(id);
+		final int id;
+		if (task.getId() == 0) {
+			id = ++generatorId;
+			task.setId(id);
+		} else {
+			id = task.getId();
+			if (id > generatorId) {
+				generatorId = id;
+			}
+		}
 		tasks.put(id, task);
 		return id;
 	}
 
 	@Override
 	public int addNewEpic(Epic epic) {
-		final int id = ++generatorId;
-		epic.setId(id);
+		final int id;
+		if (epic.getId() == 0) {
+			id = ++generatorId;
+			epic.setId(id);
+		} else {
+			id = epic.getId();
+			if (id > generatorId) {
+				generatorId = id;
+			}
+		}
 		epics.put(id, epic);
 		return id;
-
 	}
 
 	@Override
@@ -94,11 +109,22 @@ public class InMemoryTaskManager implements TaskManager {
 		if (epic == null) {
 			return null;
 		}
-		if (epicId == subtask.getId()) {
+
+		if (epicId == subtask.getId() && subtask.getId() != 0) {
 			return null;
 		}
-		final int id = ++generatorId;
-		subtask.setId(id);
+
+		final int id;
+		if (subtask.getId() == 0) {
+			id = ++generatorId;
+			subtask.setId(id);
+		} else {
+			id = subtask.getId();
+			if (id > generatorId) {
+				generatorId = id;
+			}
+		}
+
 		subtasks.put(id, subtask);
 		epic.addSubtaskId(subtask.getId());
 		updateEpicStatus(epicId);
