@@ -3,8 +3,8 @@ package ru.yandex.javacourse.schedule;
 import static ru.yandex.javacourse.schedule.tasks.TaskStatus.DONE;
 import static ru.yandex.javacourse.schedule.tasks.TaskStatus.IN_PROGRESS;
 import static ru.yandex.javacourse.schedule.tasks.TaskStatus.NEW;
-
-import ru.yandex.javacourse.schedule.manager.Managers;
+import java.io.File;  
+import ru.yandex.javacourse.schedule.manager.FileBackedTaskManager;  
 import ru.yandex.javacourse.schedule.manager.TaskManager;
 import ru.yandex.javacourse.schedule.tasks.Epic;
 import ru.yandex.javacourse.schedule.tasks.Subtask;
@@ -13,7 +13,7 @@ import ru.yandex.javacourse.schedule.tasks.Task;
 public class Main {
 	public static void main(String[] args) {
 
-		TaskManager manager = Managers.getDefault();
+		TaskManager manager = new FileBackedTaskManager(new File("tasks.csv"));
 
 		// Создание
 		Task task1 = new Task("Task #1", "Task1 description", NEW);
