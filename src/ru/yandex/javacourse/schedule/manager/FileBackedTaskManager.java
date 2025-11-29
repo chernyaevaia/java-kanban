@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.Duration;
+import java.time.LocalDateTime;
 
 import ru.yandex.javacourse.schedule.tasks.Epic;
 import ru.yandex.javacourse.schedule.tasks.Subtask;
@@ -65,9 +67,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private String convertToString(Task task) {
+        long durationMinutes = 0;
+        if (task.getDuration() != null) {
+            durationMinutes = task.getDuration().toMinutes();
+        }
+        String startTimeStr = "";
+        if (task.getStartTime() != null) {
+            startTimeStr = task.getStartTime().toString();
+        }
         String baseInfo = task.getId() + "," + getTaskType(task) + "," +
                 task.getName() + "," + task.getStatus() + "," +
-                task.getDescription();
+                task.getDescription() + "," +
+                durationMinutes + "," + startTimeStr;
 
         if (task instanceof Subtask) {
             Subtask subtask = (Subtask) task;
@@ -78,7 +89,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     private Task createFromString(String value) {
-        String[] parts = value.split(",");
+        String[] parts = value.split(",", -1);
 
         int id = Integer.parseInt(parts[0]);
         TaskType type = TaskType.valueOf(parts[1]);
@@ -86,14 +97,22 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         TaskStatus status = TaskStatus.valueOf(parts[3]);
         String description = parts[4];
 
+        long durationMinutes = Long.parseLong(parts[5]);
+        Duration duration = Duration.ofMinutes(durationMinutes);
+
+        LocalDateTime startTime = null;
+        if (!parts[6].isEmpty() && !parts[6].equals("null")) {
+            startTime = LocalDateTime.parse(parts[6]);
+        }
+
         switch (type) {
             case TASK:
-                return new Task(id, name, description, status);
+                return new Task(id, name, description, status, duration, startTime);
             case EPIC:
-                return new Epic(id, name, description);
+                return new Epic(id, name, description, duration, startTime);
             case SUBTASK:
-                int epicId = Integer.parseInt(parts[5]);
-                return new Subtask(id, name, description, status, epicId);
+                int epicId = Integer.parseInt(parts[7]);
+                return new Subtask(id, name, description, status, epicId, duration, startTime);
             default:
                 throw new IllegalArgumentException("Unknown task type: " + type);
         }
@@ -102,7 +121,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     public void save() {
 
         try (FileWriter fileWriter = new FileWriter(file)) {
-            fileWriter.write("id,type,name,status,description,epic\n");
+            fileWriter.write("id,type,name,status,description,duration,startTime,epic\n");
 
             for (Task task : getTasks()) {
                 fileWriter.write(convertToString(task) + "\n");

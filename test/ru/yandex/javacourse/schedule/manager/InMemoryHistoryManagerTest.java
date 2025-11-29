@@ -19,7 +19,7 @@ public class InMemoryHistoryManagerTest {
     // Test 1: adding a task   
     @Test  
     public void testAdd() {  
-        Task task = new Task(1, "Test Task", "Description", null);  
+        Task task = new Task(1, "Test Task", "Description", null, null, null);  
         historyManager.addTask(task);  
         final List<Task> history = historyManager.getHistory();  
         assertNotNull(history, "History should not be null.");  
@@ -29,7 +29,7 @@ public class InMemoryHistoryManagerTest {
     // Test 2: no duplicates 
     @Test  
     public void testNoDuplicates() {  
-        Task task = new Task(1, "Test Task", "Description", null);  
+        Task task = new Task(1, "Test Task", "Description", null, null, null);  
         historyManager.addTask(task);  
         historyManager.addTask(task);   
         assertEquals(1, historyManager.getHistory().size(), "History should not contain duplicates.");  
@@ -38,9 +38,9 @@ public class InMemoryHistoryManagerTest {
     // Test 3: re-adding moves task to the end
     @Test  
     public void testReAddingMovesToEnd() {  
-        Task task1 = new Task(1, "Task 1", "D1", null);  
-        Task task2 = new Task(2, "Task 2", "D2", null);  
-        Task task3 = new Task(3, "Task 3", "D3", null);  
+        Task task1 = new Task(1, "Task 1", "D1", null, null, null);  
+        Task task2 = new Task(2, "Task 2", "D2", null, null, null);  
+        Task task3 = new Task(3, "Task 3", "D3", null, null, null);  
   
         historyManager.addTask(task1);  
         historyManager.addTask(task2);  
@@ -58,8 +58,8 @@ public class InMemoryHistoryManagerTest {
     // Test 4: Removal 
     @Test  
     public void testRemoveFirst() {  
-        Task task1 = new Task(1, "Task 1", "D1", null);  
-        Task task2 = new Task(2, "Task 2", "D2", null);  
+        Task task1 = new Task(1, "Task 1", "D1", null, null, null);  
+        Task task2 = new Task(2, "Task 2", "D2", null, null, null);  
         historyManager.addTask(task1);  
         historyManager.addTask(task2);  
   
