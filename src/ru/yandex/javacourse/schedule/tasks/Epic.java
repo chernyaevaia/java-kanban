@@ -1,19 +1,20 @@
 package ru.yandex.javacourse.schedule.tasks;
 
-import static ru.yandex.javacourse.schedule.tasks.TaskStatus.NEW;
-
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
 	protected ArrayList<Integer> subtaskIds = new ArrayList<>();
-
-	public Epic(int id, String name, String description) {
-		super(id, name, description, NEW);
-	}
+	protected LocalDateTime endTime;
 
 	public Epic(String name, String description) {
-		super(name, description, NEW);
+		super(name, description, TaskStatus.NEW, Duration.ZERO, null);
+	}
+
+	public Epic(int id, String name, String description) {
+		super(id, name, description, TaskStatus.NEW, Duration.ZERO, null);
 	}
 
 	public void addSubtaskId(int id) {
@@ -32,12 +33,22 @@ public class Epic extends Task {
 		subtaskIds.remove(Integer.valueOf(id));
 	}
 
+	public void setEndTime(LocalDateTime endTime) {
+		this.endTime = endTime;
+	}
+
+	@Override
+	public LocalDateTime getEndTime() {
+		return this.endTime;
+	}
+
 	@Override
 	public String toString() {
 		return "Epic{" +
 				"id=" + id +
 				", name='" + name + '\'' +
 				", status=" + status +
+				", duration='" + duration + '\'' +
 				", description='" + description + '\'' +
 				", subtaskIds=" + subtaskIds +
 				'}';
