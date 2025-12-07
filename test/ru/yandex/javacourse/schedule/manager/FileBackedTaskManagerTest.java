@@ -53,7 +53,7 @@ public class FileBackedTaskManagerTest {
     @Test
     public void testSaveAndLoadMultipleTypes() {
         Task task = new Task(0, "Test Task", "Task Description", TaskStatus.NEW, Duration.ZERO, null);
-        Epic epic = new Epic(0, "Test Epic", "Epic Description", Duration.ZERO, null);
+        Epic epic = new Epic(0, "Test Epic", "Epic Description");
 
         int taskId = taskManager.addNewTask(task);
         int epicId = taskManager.addNewEpic(epic);
@@ -77,7 +77,7 @@ public class FileBackedTaskManagerTest {
     // Test 3: Epic-subtask relationships preserved
     @Test
     public void testEpicSubtaskRelationshipsPreserved() {
-        Epic epic = new Epic(0, "Test Epic", "Epic Description", Duration.ZERO, null);
+        Epic epic = new Epic(0, "Test Epic", "Epic Description");
         int epicId = taskManager.addNewEpic(epic);
 
         Subtask subtask1 = new Subtask(0, "Subtask 1", "Description 1", TaskStatus.NEW, epicId, Duration.ZERO, null);

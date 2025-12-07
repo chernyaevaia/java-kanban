@@ -1,7 +1,5 @@
 package ru.yandex.javacourse.schedule.tasks;
 
-import static ru.yandex.javacourse.schedule.tasks.TaskStatus.NEW;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,12 +9,12 @@ public class Epic extends Task {
 	protected ArrayList<Integer> subtaskIds = new ArrayList<>();
 	protected LocalDateTime endTime;
 
-	public Epic(int id, String name, String description, Duration duration, LocalDateTime startTime) {
-		super(id, name, description, NEW, Duration.ZERO, null);
+	public Epic(String name, String description) {
+		super(name, description, TaskStatus.NEW, Duration.ZERO, null);
 	}
 
-	public Epic(String name, String description, Duration duration, LocalDateTime startTime) {
-		super(name, description, NEW, duration, startTime);
+	public Epic(int id, String name, String description) {
+		super(id, name, description, TaskStatus.NEW, Duration.ZERO, null);
 	}
 
 	public void addSubtaskId(int id) {

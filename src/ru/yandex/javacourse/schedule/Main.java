@@ -21,8 +21,8 @@ public class Main {
 		final int taskId1 = manager.addNewTask(task1);
 		final int taskId2 = manager.addNewTask(task2);
 
-		Epic epic1 = new Epic(taskId2, "Epic #1", "Epic1 description", null, null);
-		Epic epic2 = new Epic(taskId2, "Epic #2", "Epic2 description", null, null);
+		Epic epic1 = new Epic(taskId2, "Epic #1", "Epic1 description");
+		Epic epic2 = new Epic(taskId2, "Epic #2", "Epic2 description");
 		final int epicId1 = manager.addNewEpic(epic1);
 		final int epicId2 = manager.addNewEpic(epic2);
 

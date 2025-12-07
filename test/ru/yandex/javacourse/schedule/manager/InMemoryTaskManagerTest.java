@@ -55,7 +55,7 @@ public class InMemoryTaskManagerTest {
 
     @Test
     public void testCannotAddEpicAsItsOwnSubtask() {
-        Epic epic = new Epic("Epic", "Desc", Duration.ZERO, null);
+        Epic epic = new Epic("Epic", "Desc");
         int epicId = manager.addNewEpic(epic);
 
         assertThrows(IllegalArgumentException.class, () -> {
@@ -65,7 +65,7 @@ public class InMemoryTaskManagerTest {
 
     @Test
     public void testDeletingSubtaskRemovesItFromParentEpic() {
-        Epic epic = new Epic(0, "Epic", "Epic desc", null, null);
+        Epic epic = new Epic(0, "Epic", "Epic desc");
         int epicId = manager.addNewEpic(epic);
 
         Subtask subtask = new Subtask("Subtask", "Sub desc", TaskStatus.NEW, epicId, Duration.ofMinutes(5), null);
@@ -81,7 +81,7 @@ public class InMemoryTaskManagerTest {
 
     @Test
     public void testDeletingEpicRemovesAllItsSubtasks() {
-        Epic epic = new Epic(0, "Epic", "Epic desc", null, null);
+        Epic epic = new Epic(0, "Epic", "Epic desc");
         int epicId = manager.addNewEpic(epic);
 
         Subtask subtask1 = new Subtask("Subtask 1", "Sub desc 1", TaskStatus.NEW, epicId, Duration.ofMinutes(5), null);
