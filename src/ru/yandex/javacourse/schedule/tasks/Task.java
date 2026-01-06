@@ -1,5 +1,7 @@
 package ru.yandex.javacourse.schedule.tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Task {
@@ -7,18 +9,26 @@ public class Task {
 	protected String name;
 	protected TaskStatus status;
 	protected String description;
+	protected Duration duration;
+	protected LocalDateTime startTime;
 
-	public Task(int id, String name, String description, TaskStatus status) {
+	public Task(int id, String name, String description, TaskStatus status, Duration duration,
+			LocalDateTime startTime) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.status = status;
+		this.duration = duration;
+		this.startTime = startTime;
 	}
 
-	public Task(String name, String description, TaskStatus status) {
+	public Task(String name, String description, TaskStatus status, Duration duration,
+			LocalDateTime startTime) {
 		this.name = name;
 		this.description = description;
 		this.status = status;
+		this.duration = duration;
+		this.startTime = startTime;
 	}
 
 	public int getId() {
@@ -53,6 +63,29 @@ public class Task {
 		this.description = description;
 	}
 
+	public Duration getDuration() {
+		return duration;
+	}
+
+	public void setDuration(Duration duration) {
+		this.duration = duration;
+	}
+
+	public LocalDateTime getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(LocalDateTime startTime) {
+		this.startTime = startTime;
+	}
+
+	public LocalDateTime getEndTime() {
+		if (startTime == null) {
+			return null;
+		}
+		return startTime.plus(duration);
+	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
@@ -60,8 +93,10 @@ public class Task {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 		Task task = (Task) o;
 		return id == task.id;
 	}
@@ -73,6 +108,8 @@ public class Task {
 				", name='" + name + '\'' +
 				", status='" + status + '\'' +
 				", description='" + description + '\'' +
+				", duration='" + duration + '\'' +
+				", startTime='" + startTime + '\'' +
 				'}';
 	}
 }
