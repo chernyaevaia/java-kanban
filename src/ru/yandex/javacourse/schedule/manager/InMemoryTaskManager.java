@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import ru.yandex.javacourse.schedule.NotFoundException;
 import ru.yandex.javacourse.schedule.tasks.Epic;
 import ru.yandex.javacourse.schedule.tasks.Subtask;
 import ru.yandex.javacourse.schedule.tasks.Task;
@@ -90,43 +91,57 @@ public class InMemoryTaskManager implements TaskManager {
 		return tasks;
 	}
 
-	@Override
-	public Task getTask(int id) {
-		final Task task = tasks.get(id);
-		historyManager.addTask(task);
-		return task;
-	}
+@Override  
+    public Task getTask(int id) {  
+        final Task task = tasks.get(id);  
+        if (task == null) {  
+            throw new NotFoundException("Task not found with id: " + id);  
+        }  
+        historyManager.addTask(task);  
+        return task;  
+    } 
 
-	@Override
-	public Subtask getSubtask(int id) {
-		final Subtask subtask = subtasks.get(id);
-		historyManager.addTask(subtask);
-		return subtask;
-	}
+    @Override  
+    public Subtask getSubtask(int id) {  
+        final Subtask subtask = subtasks.get(id);  
+        if (subtask == null) {  
+            throw new NotFoundException("Subtask not found with id: " + id);  
+        }  
+        historyManager.addTask(subtask);  
+        return subtask;  
+    }
 
-	@Override
-	public Epic getEpic(int id) {
-		final Epic epic = epics.get(id);
-		historyManager.addTask(epic);
-		return epic;
-	}
+    @Override  
+    public Epic getEpic(int id) {  
+        final Epic epic = epics.get(id);  
+        if (epic == null) {  
+            throw new NotFoundException("Epic not found with id: " + id);  
+        }  
+        historyManager.addTask(epic);  
+        return epic;  
+    }
 
-	@Override
-	public int addNewTask(Task task) {
-		final int id;
-		if (task.getId() == 0) {
-			id = ++generatorId;
-			task.setId(id);
-		} else {
-			id = task.getId();
-			if (id > generatorId) {
-				generatorId = id;
-			}
-		}
-		tasks.put(id, task);
-		addToPrioritized(task);
-		return id;
-	}
+@Override  
+    public int addNewTask(Task task) {  
+        // FIX: Check for overlap before adding  
+        if (isOverlapping(task)) {  
+            throw new IllegalArgumentException("Task overlaps with an existing task.");  
+        }  
+  
+        final int id;  
+        if (task.getId() == 0) {  
+            id = ++generatorId;  
+            task.setId(id);  
+        } else {  
+            id = task.getId();  
+            if (id > generatorId) {  
+                generatorId = id;  
+            }  
+        }  
+        tasks.put(id, task);  
+        addToPrioritized(task);  
+        return id;  
+    }
 
 	@Override
 	public int addNewEpic(Epic epic) {
